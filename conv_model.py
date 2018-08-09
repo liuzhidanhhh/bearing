@@ -96,7 +96,7 @@ def main(train_path,train_label,test_path,test_label,NUM_EPOCHS):
     loss += 1e-3 * regularizers
 
     batch = tf.Variable(0, dtype=tf.int32)
-    # 指数衰减学习率
+    # 指数衰减学习率normal = np.load ('normal.npy')
     learning_rate = tf.train.exponential_decay(0.02, batch * BATCH_SIZE, train_size, 0.95, staircase=True)
     # Adam 下降法，最小化loss
     optimizer=tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False, name='Adam').minimize(loss, global_step=batch)

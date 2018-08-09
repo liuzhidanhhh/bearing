@@ -79,17 +79,19 @@ def main(_):
         pool = tf.nn.max_pool(relu, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
         conv = tf.nn.conv2d(pool, conv2_weights, strides=[1, 1, 1, 1], padding='VALID')
         relu = tf.nn.relu(tf.nn.bias_add(conv, conv2_biases))
-        pool = tf.nn.max_pool(relu, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+        pool = tf.nn.max_pool(relu, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME',name='pool')
 
         # 全链接层
         pool_shape = pool.get_shape().as_list()
-        reshape = tf.reshape(pool, [pool_shape[0], pool_shape[1] * pool_shape[2] * pool_shape[3]])
+        reshape = tf.reshape(pool, [pool_shape[0], pool_shape[1] * pool_shape[2] * pool_shape[3]],name='feature')
         hidden = tf.nn.relu(tf.matmul(reshape, fc1_weights) + fc1_biases)
 
         # 随机drop 0.5 的神经元素，防止过拟合
         if train:
             hidden = tf.nn.dropout(hidden, 0.5, seed=SEED)
-        return tf.matmul(hidden, fc2_weights) + fc2_biases
+
+        logist = tf.matmul (hidden, fc2_weights) + fc2_biases
+        return logist
 
     logits = model(train_data_node, True)
 
@@ -143,6 +145,8 @@ def main(_):
             if step % EVAL_FREQUENCY == 0:
                 l, lr, predictions = sess.run([loss, learning_rate, train_prediction],
                                               feed_dict=feed_dict)
+                print('feature:')
+                #print(feature)
                 elapsed_time = time.time() - start_time
                 start_time = time.time()
                 print('Step %d (epoch %.2f), %.1f ms' %
@@ -162,8 +166,6 @@ def main(_):
                 test_labels2 = np.load (path + test_dataset[2] + '_label.npy')
                 test_data1 = np.reshape (test_data1, [len(test_data1), 128, 1, 1])
                 test_data2 = np.reshape (test_data2, [len(test_data2), 128, 1, 1])
-                print(numpy.argmax(eval_in_batches(test_data, sess), 1))
-                print(test_labels)
                 test_error = error_rate(eval_in_batches(test_data, sess), test_labels)
                 test_error1 = error_rate(eval_in_batches(test_data1, sess), test_labels1)
                 test_error2 = error_rate(eval_in_batches(test_data2, sess), test_labels2)

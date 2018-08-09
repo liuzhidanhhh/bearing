@@ -7,7 +7,7 @@
 # frequency: 12KHZ
 # 从给定的数据集中随机截取size个样本点 截num_size个样本每种条件
 
-# 取driven end 的数据
+# 取driven end 的数据，从原始的数据总抽取我们需要的用于训练的数据集
 #label normal,inner,ball,outer:0,1,2,3
 
 

@@ -75,16 +75,16 @@ gen_data_path='scale-gen-512-data/1730_gen_data'
 gen_label_path='scale-gen-512-data/1730_gen_label'
 # save data1
 real_num1=450
-real_num2=0
-real_num3=0
-real_num4=0
-gen_num1=10
-gen_num2=10
-gen_num3=10
+real_num2=10
+real_num3=10
+real_num4=10
+gen_num1=90
+gen_num2=90
+gen_num3=90
 data,label=make_data_set(real_data_path,real_label_path,real_num1,real_num2,real_num3,real_num4,
                   gen_data_path,gen_label_path,gen_num1,gen_num2,gen_num3)
-np.save('model_data/data6.npy',data)
-np.save('model_data/label6.npy',label)
+np.save('model_data/data7.npy',data)
+np.save('model_data/label7.npy',label)
 
 
 

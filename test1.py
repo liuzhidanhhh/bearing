@@ -42,10 +42,11 @@ def main():
     with tf.Session() as sess:
         saver = tf.train.import_meta_graph ('./scale-checkpoint_dir/MyModel-3500.meta')
         saver.restore (sess, tf.train.latest_checkpoint ('./scale-checkpoint_dir'))
-        eval_prediction=saver
         graph = tf.get_default_graph()
         eval_data=graph.get_tensor_by_name('eval_data:0')
         eval_prediction = graph.get_tensor_by_name ("eval_prediction:0")
+        #feature=graph.get_tensor_by_name('feature:0')
+
 
         def eval_in_batches(data, sess):
             """Get all predictions for a dataset by running it in small batches."""
@@ -63,27 +64,27 @@ def main():
             return predictions
 
 
-        # 测试不同转速的数据集
-        # test_data = np.load('512-scale-data/1797_train.npy')
-        # test_labels1 = np.load('512-scale-data/1797_label.npy')
-        # test_data1=[calculate_ES.cal_es(x, window_size) for x in test_data]
-        # test_data1 = np.reshape(test_data1, [len(test_data1), 128, 1, 1])
-        # test_error1 = error_rate(eval_in_batches(test_data1, sess), test_labels1)
-        # print('Test error: %.1f%%' % test_error1)
-        # accuracy1 = (1 - test_error1 / 100) * 100
-        # print('test accuracy:%.1f%%' % accuracy1)
+        #测试不同转速的数据集
+        test_data = np.load('512-scale-data/1797_train.npy')
+        test_labels1 = np.load('512-scale-data/1797_label.npy')
+        test_data1=[calculate_ES.cal_es(x, window_size) for x in test_data]
+        test_data1 = np.reshape(test_data1, [len(test_data1), 128, 1, 1])
+        test_error1 = error_rate(eval_in_batches(test_data1, sess), test_labels1)
+        print('Test error: %.1f%%' % test_error1)
+        accuracy1 = (1 - test_error1 / 100) * 100
+        print('test accuracy:%.1f%%' % accuracy1)
 
         # 测试GAN 生成的数据集
-        test_data = np.load ('scale-gen-512-data/1730_gen_data2.npy')
-        test_labels = np.load ('scale-gen-512-data/1730_gen_label2.npy')
-        for test,label in zip(test_data,test_labels):
-            data=[calculate_ES.cal_es(x, window_size) for x in test]
-            data = np.reshape (data , [len (data), 128, 1, 1])
-            error = error_rate (eval_in_batches (data, sess), label)
-            print(numpy.argmax(eval_in_batches (data, sess), 1))
-            print ('Test error: %.1f%%' % error)
-            accuracy1 = (1 - error/ 100) * 100
-            print ('test accuracy:%.1f%%' % accuracy1)
+        # test_data = np.load ('scale-gen-512-data/1730_gen_data2.npy')
+        # test_labels = np.load ('scale-gen-512-data/1730_gen_label2.npy')
+        # for test,label in zip(test_data,test_labels):
+        #     data=[calculate_ES.cal_es(x, window_size) for x in test]
+        #     data = np.reshape (data , [len (data), 128, 1, 1])
+        #     error = error_rate (eval_in_batches (data, sess), label)
+        #     print(numpy.argmax(eval_in_batches (data, sess), 1))
+        #     print ('Test error: %.1f%%' % error)
+        #     accuracy1 = (1 - error/ 100) * 100
+        #     print ('test accuracy:%.1f%%' % accuracy1)
 
 if __name__ == '__main__':
     main()
